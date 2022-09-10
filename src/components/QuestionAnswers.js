@@ -1,4 +1,4 @@
-import { useEffect, useState, memo, useCallback } from "react";
+import { useEffect, useState, memo, useCallback, useRef } from "react";
 import styled from "styled-components";
 import Answer from "./Answer";
 
@@ -11,16 +11,23 @@ const QuestionAnswers = memo(
     missing,
     updateCorrectAnswers,
   }) => {
+    const [randomizedAnswer, setRandomizedAnswer] = useState({
+      randomized: false,
+      answers: [...data.incorrectAnswers, data.correctAnswer]
+    });
     const [chosenAnswer, setChosenAnswer] = useState("");
-    let answers = [];
 
     useEffect(() => {
-      answers = [...data.incorrectAnswers, data.correctAnswer];
-      for (let i = 0; i < answers.length; i++) {
-        const random = Math.floor(Math.random() * answers.length);
-        [answers[i], answers[random]] = [answers[random], answers[i]];
+      const newAnswers = [...randomizedAnswer.answers];
+      for (let i = 0; i < newAnswers.length; i++) {
+        let random = Math.floor(Math.random() * newAnswers.length);
+        [newAnswers[i], newAnswers[random]] = [newAnswers[random], newAnswers[i]]
       }
-    }, [answers, data.incorrectAnswers, data.correctAnswer])
+      setRandomizedAnswer({
+        randomized: true,
+        answers: newAnswers,
+      })
+    }, []);
 
     useEffect(() => {
       if (chosenAnswer) {
@@ -51,7 +58,7 @@ const QuestionAnswers = memo(
       <QuestionAnswersContainer missing={missing}>
         <Question>{data.question}</Question>
         <Answers>
-          {answers.map((answer) => (
+          {randomizedAnswer.randomized && randomizedAnswer.answers.map((answer) => (
             <Answer
               key={answer}
               handleClick={handleClick}
