@@ -12,12 +12,15 @@ const QuestionAnswers = memo(
     updateCorrectAnswers,
   }) => {
     const [chosenAnswer, setChosenAnswer] = useState("");
-    let answers = [...data.incorrectAnswers, data.correctAnswer];
-    for (let i = 0; i < answers.length; i++) {
-      const random = Math.floor(Math.random() * answers.length);
-      [answers[i], answers[random]] = [answers[random], answers[i]];
-    }
-    console.log(answers, data.correctAnswer);
+    let answers = [];
+
+    useEffect(() => {
+      answers = [...data.incorrectAnswers, data.correctAnswer];
+      for (let i = 0; i < answers.length; i++) {
+        const random = Math.floor(Math.random() * answers.length);
+        [answers[i], answers[random]] = [answers[random], answers[i]];
+      }
+    }, [answers, data.incorrectAnswers, data.correctAnswer])
 
     useEffect(() => {
       if (chosenAnswer) {
