@@ -13,7 +13,7 @@ const QuestionAnswers = memo(
   }) => {
     const [randomizedAnswer, setRandomizedAnswer] = useState({
       randomized: false,
-      answers: [...data.incorrectAnswers, data.correctAnswer]
+      answers: [...data.incorrectAnswers, data.correctAnswer],
     });
     const [chosenAnswer, setChosenAnswer] = useState("");
 
@@ -21,12 +21,15 @@ const QuestionAnswers = memo(
       const newAnswers = [...randomizedAnswer.answers];
       for (let i = 0; i < newAnswers.length; i++) {
         let random = Math.floor(Math.random() * newAnswers.length);
-        [newAnswers[i], newAnswers[random]] = [newAnswers[random], newAnswers[i]]
+        [newAnswers[i], newAnswers[random]] = [
+          newAnswers[random],
+          newAnswers[i],
+        ];
       }
       setRandomizedAnswer({
         randomized: true,
         answers: newAnswers,
-      })
+      });
     }, []);
 
     useEffect(() => {
@@ -58,26 +61,27 @@ const QuestionAnswers = memo(
       <QuestionAnswersContainer missing={missing}>
         <Question>{data.question}</Question>
         <Answers>
-          {randomizedAnswer.randomized && randomizedAnswer.answers.map((answer) => (
-            <Answer
-              key={answer}
-              handleClick={handleClick}
-              id={
-                checkAnswers && answer === data.correctAnswer
-                  ? "correct"
-                  : checkAnswers &&
-                    answer === chosenAnswer &&
-                    answer !== data.correctAnswer
-                  ? "incorrect"
-                  : answer === chosenAnswer
-                  ? "chosen"
-                  : checkAnswers && answer !== chosenAnswer
-                  ? "unchosen"
-                  : ""
-              }
-              val={answer}
-            />
-          ))}
+          {randomizedAnswer.randomized &&
+            randomizedAnswer.answers.map((answer) => (
+              <Answer
+                key={answer}
+                handleClick={handleClick}
+                id={
+                  checkAnswers && answer === data.correctAnswer
+                    ? "correct"
+                    : checkAnswers &&
+                      answer === chosenAnswer &&
+                      answer !== data.correctAnswer
+                    ? "incorrect"
+                    : answer === chosenAnswer
+                    ? "chosen"
+                    : checkAnswers && answer !== chosenAnswer
+                    ? "unchosen"
+                    : ""
+                }
+                val={answer}
+              />
+            ))}
         </Answers>
       </QuestionAnswersContainer>
     );
